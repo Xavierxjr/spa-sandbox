@@ -1,131 +1,59 @@
-import React from 'react'
-import logo from './logo.svg'
+import React, { useState } from 'react'
 import './App.css'
+import Video, { Blah } from './Video'
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  NavLink,
+} from 'react-router-dom'
+import { Button } from '@material-ui/core'
 
 
-class Adder extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-    }
-  }
+function StatefulButton() {
+  const [ wasClicked, setWasClicked ] = useState(false)
 
-  async componentDidMount() {
-    const response = await fetch("http://localhost:8000/add", {
-      method: 'POST',
-      mode: 'cors',
-      cache: 'no-cache',
-      credentials: 'same-origin',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      redirect: 'follow',
-      referrerPolicy: 'no-referrer',
-      body: JSON.stringify({a: 1, b: 2}),
-    })
-    const responseJson = await response.json()
-
-    if (response.ok) {
-      this.setState({
-      })
-    }
-
-  }
+  return (
+    <>
+    <h3>Clicked? {(wasClicked) ? <span style={{color: '#00ff00'}}>Yes</span> : 'No'}</h3>
+      <Button color="primary" onClick={() => setWasClicked(true)}>True!</Button>
+      <Button color="secondary" onClick={() => setWasClicked(false)}>False!</Button>
+    </>
+  )
 }
 
-
-class Video extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      id: 'No ID',
-      name: 'No Video Name Yet',
-      hasLoaded: false,
-      error: false,
-      image: null,
-      video: null,
-    }
-  }
-
-  async componentDidMount() {
-    const response = await fetch("http://localhost:8000/videos/3/")
-    const responseJson = await response.json()
-    if (response.ok) {
-      this.setState({
-        id: responseJson['id'],
-        name: responseJson.name,
-        hasLoaded: true,
-        image: responseJson.image,
-        video: responseJson.video,
-      })
-    } else {
-      this.setState({
-        error: true,
-      })
-    }
-    console.log(response)
-    console.log(responseJson)
-  }
-
-
-  render() {
-    const { children } = this.props
-    const {
-      id,
-      name,
-      hasLoaded,
-      error,
-      image,
-      video,
-    } = this.state
-
-    if (error) {
-      return <b style={{color: 'red'}}>ERROR!</b>
-    }
-
-    if ( !hasLoaded ) {
-      return <Loading />
-    }
-
-    return (
-      <p>
-        Video: ID = {id} --- 
-        Name = {name} --- 
-        Children = {children} --- 
-        <img src={image} />
-        <hr />
-        <video width="320" height="240" controls>
-          <source src={video} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-        <hr />
-      </p>
-    )
-  }
+const routes = {
+  'blah': '/blah',
+  'video': '/video',
+  'home': '/home'
 }
-
-
-const Loading = () =>
-  <img src={logo} className="App-logo" alt="logo" />
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <Video name="Insert Movie Name">Blah blahblah</Video>
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="App">
+        <header className="App-header">
+          <h1>ASDF</h1>
+          <ul>
+            <li><NavLink activeClassName="activeLink" to={routes.blah}>Blah</NavLink></li>
+            <li><NavLink activeClassName="activeLink" to="/video">Video</NavLink></li>
+            <li><Link to="/home">Home</Link></li>
+          </ul>
+          <Switch>
+            <Route path={routes.blah}>
+              <Blah />
+            </Route>
+            <Route path="/video">
+              <Video name="Insert Movie Name">Blah blahblah</Video>
+            </Route>
+            <Route path="/home">
+              <StatefulButton />
+            </Route>
+          </Switch>
+        </header>
+      </div>
+    </Router>
   )
 }
 
