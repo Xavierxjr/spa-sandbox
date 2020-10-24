@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <h1 id="title"></h1>
+</head>
+<button id="add">+</button>
+<button id="subtract">-</button>
+<button id="addTen">+10</button>
+<script>
+    class createStore {
+        constructor(initialState) {
+            this.state = initialState
+            this.fn = null
+        }
+
+        dispatch(action) {
+            switch (action.type) {
+                case "INCREMENT": {
+                    const oldCounter = this.state.counter
+                    const newState = {...this.state, counter: oldCounter + action.amount}
+                    this.state = newState
+                    break
+                }
+                case 'DECREMENT': {
+                    const oldCounter = this.state.counter
+                    const newState = {...this.state, counter:oldCounter - action.amount}
+                    this.state = newState
+                    break
+                }
+             }
+            console.log(`Counter: ${store.state.counter}`)
+            this.fn()
+        }
+        subscribe(fn){
+            this.fn = fn
+        }
+    }
+
+    const store = new createStore({counter: 0})
+
+    store.subscribe(() => document.getElementById("title").innerText = `Counter: ${store.state.counter}`)
+
+    function incrementer(amount){
+        return {type: "INCREMENT", amount: amount}
+    }
+    function decrement(amount){
+        return {type: "DECREMENT", amount: amount}
+    }
+
+    document.getElementById('add').addEventListener('click', ()=> {
+        store.dispatch({type: 'INCREMENT', amount:1})
+    })
+    document.getElementById('addTen').addEventListener('click', ()=> {
+        store.dispatch({type: 'INCREMENT', amount:10})
+    })
+</script>
+<body>
+</body>
+</html>
